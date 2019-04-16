@@ -1,4 +1,4 @@
-#!/bin/env node
+#!/usr/bin/env node
 import { spawn } from 'child_process';
 import download from 'download';
 import unzip from 'extract-zip';
