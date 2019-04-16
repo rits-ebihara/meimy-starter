@@ -4,11 +4,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = require("child_process");
+const download_1 = __importDefault(require("download"));
 const extract_zip_1 = __importDefault(require("extract-zip"));
 const fs_extra_1 = require("fs-extra");
 const path_1 = __importDefault(require("path"));
 const replace_1 = __importDefault(require("replace"));
-const request_promise_native_1 = __importDefault(require("request-promise-native"));
+// import request from 'request-promise-native';
 const dependencies = [
     'clone',
     'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-account-manager-parts.git',
@@ -38,7 +39,8 @@ const devDependencies = [
     '@types/url-parse',
     'tslint',
 ];
-const templateUrl = 'https://drive.google.com/uc?id=1vY70WkGnfbrJwcORZPP9iAi0tJSHjXJ3';
+// tslint:disable-next-line: max-line-length
+const templateUrl = 'https://uc237fdfd9c700f37ab32aaa37af.dl.dropboxusercontent.com/cd/0/get/AfE4hxDlhLPBE7IEnZrXuRodYHUSIYNu1uPAtOyRgzlG9bdJpWZM7IXrplaHhK2OpMMpGEB4Q15E5A51DkTRKsxtDWTuoyTpqO6jgXNOcf7TdQ/file?_download_id=2888261723509631419089359306056371096951734941024743063022163223&_notify_domain=www.dropbox.com&dl=1';
 const { argv } = process;
 const { cwd } = process;
 if (argv.length !== 4) {
@@ -54,6 +56,7 @@ const createApp = async () => {
     if (path.name === 'meimy-starter') {
         return;
     }
+    checkExistAppDir();
     await createReactNativeProject();
     process.chdir(appId);
     // パッケージの導入
@@ -61,8 +64,6 @@ const createApp = async () => {
     // app IDの変更
     // android app id の変更
     changeAppId();
-    // React Native ライブラリのリンク
-    linkLibrary();
     // テンプレートの展開
     await extendsTemplate();
     //
@@ -71,23 +72,28 @@ const createApp = async () => {
 const createReactNativeProject = () => {
     return new Promise((resolve, reject) => {
         console.log('create react-native project.');
-        const p = path_1.default.join(__dirname, './node_modules/.bin/react-native.cmd');
-        const rnInit = child_process_1.spawn(p, ['init', appId, '--template', 'typescript']);
-        spanLog(rnInit, resolve, reject);
+        const rnInit = child_process_1.spawn('react-native.cmd', ['init', appId, '--template', 'typescript']);
+        spawnLog(rnInit, resolve, reject);
     });
 };
-const linkLibrary = () => {
-    console.log('link libraries.');
-    child_process_1.spawnSync('./node_modules/.bin/react-native', ['link']);
+const checkExistAppDir = () => {
+    const path = path_1.default.join(cwd(), appId);
+    if (fs_extra_1.pathExistsSync(path)) {
+        console.log(`"${path}" exists.
+Delete this directory or specify another app id.`);
+        process.exit(1);
+    }
 };
 const idTemplate = 'jp.co.ricoh.jrits.eim';
 const changeAppId = () => {
     console.log('change app id.');
     // android
-    const androidPath = path_1.default.join(cwd(), 'android/app');
-    const gradleFile = path_1.default.join(androidPath, 'build.gradle');
-    const manifestFile = path_1.default.join(androidPath, 'src/main/AndroidManifest.xml');
-    const javaDir = path_1.default.join(androidPath, 'src/main/java/com/', appId);
+    const androidPath = path_1.default.join(cwd(), 'android');
+    const globalGradlePath = path_1.default.join(androidPath, 'build.gradle');
+    const androidAppPath = path_1.default.join(androidPath, 'app');
+    const gradleFile = path_1.default.join(androidAppPath, 'build.gradle');
+    const manifestFile = path_1.default.join(androidAppPath, 'src/main/AndroidManifest.xml');
+    const javaDir = path_1.default.join(androidAppPath, 'src/main/java/com/', appId);
     const javaFiles = [
         path_1.default.join(javaDir, 'MainActivity.java'),
         path_1.default.join(javaDir, 'MainApplication.java'),
@@ -100,53 +106,68 @@ const changeAppId = () => {
         replacement: idTemplate + '.' + appId,
         silent: false,
     });
+    replace_1.default({
+        paths: [globalGradlePath],
+        recursive: false,
+        regex: 'minSdkVersion = 16',
+        replacement: 'minSdkVersion = 21',
+        silent: false,
+    });
     // Java のパスディレクトリを作成
     console.log(' > change java file in android.');
     const path = idTemplate.replace(/\./g, '/');
-    const distPath = path_1.default.join(androidPath, 'src/main/java', path, appId);
+    const distPath = path_1.default.join(androidAppPath, 'src/main/java', path, appId);
     console.log(`${path} -> ${distPath}`);
     fs_extra_1.ensureDirSync(distPath);
     fs_extra_1.moveSync(javaDir, distPath);
 };
 const extendsTemplate = async () => {
     console.log('download template.');
-    const body = await request_promise_native_1.default(templateUrl, { encoding: null });
-    fs_extra_1.writeFileSync('./src.zip', body);
-    console.log('expand template.');
-    fs_extra_1.moveSync('./index.js', './_index.js');
-    fs_extra_1.moveSync('./App.tsx', './_App.tsx');
-    return new Promise((resolve, reject) => {
-        extract_zip_1.default('./src.zip', { dir: cwd() }, (error) => {
-            if (!error) {
-                resolve();
-            }
-            else {
-                reject(error);
-            }
+    try {
+        await download_1.default(templateUrl, './');
+        console.log('expand template.');
+        fs_extra_1.moveSync('./index.js', './_index.js');
+        fs_extra_1.moveSync('./App.tsx', './_App.tsx');
+        return new Promise((resolve, reject) => {
+            extract_zip_1.default('./meimy-starter-src.zip', { dir: cwd() }, (error) => {
+                if (!error) {
+                    resolve();
+                }
+                else {
+                    reject(error);
+                }
+            });
         });
-    });
+    }
+    catch (e) {
+        console.error(`Download Failed.(${templateUrl})`);
+        process.exit(1);
+    }
 };
-const installLibraries = () => {
-    return new Promise((resolve, reject) => {
-        console.log('install libraries');
-        const yarn = child_process_1.spawn('yarn.cmd', ['add', ...dependencies]);
-        spanLog(yarn, resolve, reject);
-    }).then(() => {
-        return new Promise((resolve, reject) => {
-            const yarnDev = child_process_1.spawn('yarn.cmd', ['add', '--dev', ...devDependencies]);
-            spanLog(yarnDev, resolve, reject);
+const installLibraries = async () => {
+    try {
+        await new Promise((resolve, reject) => {
+            console.log('install libraries');
+            const yarn = child_process_1.spawn('yarn.cmd', ['add', ...dependencies]);
+            spawnLog(yarn, resolve, reject);
         });
-    }).then(() => {
-        return new Promise((resolve, reject) => {
-            const link = child_process_1.spawn('yarn.cmd', ['react-native', 'link']);
-            spanLog(link, resolve, reject);
-        });
-    }).catch((error) => {
+        await promiseSpawn('yarn.cmd', ['add', '--dev', ...devDependencies]);
+        await promiseSpawn('yarn.cmd', ['react-native', 'link']);
+        await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-cookies']);
+        return promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-keychain']);
+    }
+    catch (error) {
         console.error(error);
         throw error;
+    }
+};
+const promiseSpawn = (com, options) => {
+    return new Promise((resolve, reject) => {
+        const s = child_process_1.spawn(com, options);
+        spawnLog(s, resolve, reject);
     });
 };
-const spanLog = (rnInit, resolve, reject) => {
+const spawnLog = (rnInit, resolve, reject) => {
     rnInit.stdout.setEncoding('utf-8');
     rnInit.stderr.setEncoding('utf-8');
     rnInit.stdout.on('data', (data) => {

@@ -1,3 +1,7 @@
 {
-    "java.configuration.updateBuildConfiguration": "disabled"
+    "java.configuration.updateBuildConfiguration": "disabled",
+    "codemetrics.nodeconfiguration.JsxElement": 0.25,
+    "codemetrics.nodeconfiguration.JsxSelfClosingElement": 0,
+    "codemetrics.nodeconfiguration.ArrowFunction": 0,
+    "codemetrics.basics.MetricsForArrowFunctionsToggled": false
 }

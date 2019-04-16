@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc -w"
   },
+  "bin": "./index.js",
   "devDependencies": {
+    "@types/download": "^6.2.4",
     "@types/extract-zip": "^1.6.2",
     "@types/fs-extra": "^5.0.5",
     "@types/node": "^11.13.4",
@@ -15,8 +17,10 @@
     "typescript": "^3.4.3"
   },
   "dependencies": {
+    "download": "^7.1.0",
     "extract-zip": "^1.6.7",
     "fs-extra": "^7.0.1",
+    "replace": "^1.1.0",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.7"
   }
