@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc -w"
   },
-  "bin": "./index.js",
+  "bin": {
+    "create-meimy": "./index.js"
+  },
   "devDependencies": {
     "@types/download": "^6.2.4",
     "@types/extract-zip": "^1.6.2",
