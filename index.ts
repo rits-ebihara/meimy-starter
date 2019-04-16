@@ -1,3 +1,4 @@
+#!/bin/env node
 import { spawn } from 'child_process';
 import download from 'download';
 import unzip from 'extract-zip';
@@ -5,7 +6,6 @@ import { ensureDirSync, moveSync, pathExistsSync } from 'fs-extra';
 import Path from 'path';
 import replace from 'replace';
 
-// import request from 'request-promise-native';
 const dependencies = [
     'clone',
     'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-account-manager-parts.git',

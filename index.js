@@ -1,3 +1,4 @@
+#!/bin/env node
 "use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
@@ -9,7 +10,6 @@ const extract_zip_1 = __importDefault(require("extract-zip"));
 const fs_extra_1 = require("fs-extra");
 const path_1 = __importDefault(require("path"));
 const replace_1 = __importDefault(require("replace"));
-// import request from 'request-promise-native';
 const dependencies = [
     'clone',
     'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-account-manager-parts.git',
