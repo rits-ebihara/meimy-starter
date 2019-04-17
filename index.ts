@@ -38,7 +38,7 @@ const devDependencies = [
 ];
 
 // tslint:disable-next-line: max-line-length
-const templateUrl = 'https://uc237fdfd9c700f37ab32aaa37af.dl.dropboxusercontent.com/cd/0/get/AfE4hxDlhLPBE7IEnZrXuRodYHUSIYNu1uPAtOyRgzlG9bdJpWZM7IXrplaHhK2OpMMpGEB4Q15E5A51DkTRKsxtDWTuoyTpqO6jgXNOcf7TdQ/file?_download_id=2888261723509631419089359306056371096951734941024743063022163223&_notify_domain=www.dropbox.com&dl=1';
+const templateUrl = 'https://www.dropbox.com/s/hxv0pkre1agkx3t/meimy-starter-src.zip?dl=1';
 
 const { argv } = process;
 
