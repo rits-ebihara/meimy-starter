@@ -2,27 +2,26 @@
 import { spawn } from 'child_process';
 import download from 'download';
 import unzip from 'extract-zip';
-import { ensureDirSync, moveSync, pathExistsSync } from 'fs-extra';
+import * as fs from 'fs-extra';
 import Path from 'path';
 import replace from 'replace';
 
 const dependencies = [
     'clone',
-    'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-account-manager-parts.git',
-    'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-react-components.git',
-    'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-react-helper.git',
     'native-base',
+    'react-native-cookies',
+    'react-native-device-info',
     'react-native-file-viewer',
     'react-native-fs',
     'react-native-gesture-handler',
     'react-native-loading-spinner-overlay',
-    'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-service-client.git',
-    'react-navigation',
     'react-navigation-redux-helpers',
+    'react-navigation@3.7',
     'react-redux',
     'redux-logger',
     'redux',
     'shortid',
+    'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-tools.git',
     'url-parse',
 ];
 
@@ -82,7 +81,7 @@ const createReactNativeProject = () => {
 
 const checkExistAppDir = () => {
     const path = Path.join(cwd(), appId);
-    if (pathExistsSync(path)) {
+    if (fs.pathExistsSync(path)) {
         console.log(`"${path}" exists.
 Delete this directory or specify another app id.`);
         process.exit(1);
@@ -125,8 +124,8 @@ const changeAppId = () => {
     const path = idTemplate.replace(/\./g, '/');
     const distPath = Path.join(androidAppPath, 'src/main/java', path, appId);
     console.log(`${path} -> ${distPath}`);
-    ensureDirSync(distPath);
-    moveSync(javaDir, distPath);
+    fs.ensureDirSync(distPath);
+    fs.moveSync(javaDir, distPath);
 };
 
 const extendsTemplate = async () => {
@@ -134,8 +133,8 @@ const extendsTemplate = async () => {
     try {
         await download(templateUrl, './');
         console.log('expand template.');
-        moveSync('./index.js', './_index.js');
-        moveSync('./App.tsx', './_App.tsx');
+        fs.removeSync('./index.js');
+        fs.removeSync('./App.tsx');
         return new Promise((resolve, reject) => {
             unzip('./meimy-starter-src.zip', { dir: cwd() }, (error: any) => {
                 if (!error) {
@@ -159,9 +158,10 @@ const installLibraries = async () => {
             spawnLog(yarn, resolve, reject);
         });
         await promiseSpawn('yarn.cmd', ['add', '--dev', ...devDependencies]);
-        await promiseSpawn('yarn.cmd', ['react-native', 'link']);
-        await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-cookies']);
-        return promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-keychain']);
+        return promiseSpawn('yarn.cmd', ['react-native', 'link']);
+        // await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-cookies']);
+        // await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-keychain']);
+        // return promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-device-info']);
     } catch (error) {
         console.error(error);
         throw error;

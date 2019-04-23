@@ -3,30 +3,36 @@
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const child_process_1 = require("child_process");
 const download_1 = __importDefault(require("download"));
 const extract_zip_1 = __importDefault(require("extract-zip"));
-const fs_extra_1 = require("fs-extra");
+const fs = __importStar(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
 const replace_1 = __importDefault(require("replace"));
 const dependencies = [
     'clone',
-    'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-account-manager-parts.git',
-    'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-react-components.git',
-    'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-react-helper.git',
     'native-base',
+    'react-native-cookies',
+    'react-native-device-info',
     'react-native-file-viewer',
     'react-native-fs',
     'react-native-gesture-handler',
     'react-native-loading-spinner-overlay',
-    'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-service-client.git',
-    'react-navigation',
     'react-navigation-redux-helpers',
+    'react-navigation@3.7',
     'react-redux',
     'redux-logger',
     'redux',
     'shortid',
+    'ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-tools.git',
     'url-parse',
 ];
 const devDependencies = [
@@ -78,7 +84,7 @@ const createReactNativeProject = () => {
 };
 const checkExistAppDir = () => {
     const path = path_1.default.join(cwd(), appId);
-    if (fs_extra_1.pathExistsSync(path)) {
+    if (fs.pathExistsSync(path)) {
         console.log(`"${path}" exists.
 Delete this directory or specify another app id.`);
         process.exit(1);
@@ -118,16 +124,16 @@ const changeAppId = () => {
     const path = idTemplate.replace(/\./g, '/');
     const distPath = path_1.default.join(androidAppPath, 'src/main/java', path, appId);
     console.log(`${path} -> ${distPath}`);
-    fs_extra_1.ensureDirSync(distPath);
-    fs_extra_1.moveSync(javaDir, distPath);
+    fs.ensureDirSync(distPath);
+    fs.moveSync(javaDir, distPath);
 };
 const extendsTemplate = async () => {
     console.log('download template.');
     try {
         await download_1.default(templateUrl, './');
         console.log('expand template.');
-        fs_extra_1.moveSync('./index.js', './_index.js');
-        fs_extra_1.moveSync('./App.tsx', './_App.tsx');
+        fs.removeSync('./index.js');
+        fs.removeSync('./App.tsx');
         return new Promise((resolve, reject) => {
             extract_zip_1.default('./meimy-starter-src.zip', { dir: cwd() }, (error) => {
                 if (!error) {
@@ -152,9 +158,10 @@ const installLibraries = async () => {
             spawnLog(yarn, resolve, reject);
         });
         await promiseSpawn('yarn.cmd', ['add', '--dev', ...devDependencies]);
-        await promiseSpawn('yarn.cmd', ['react-native', 'link']);
-        await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-cookies']);
-        return promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-keychain']);
+        return promiseSpawn('yarn.cmd', ['react-native', 'link']);
+        // await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-cookies']);
+        // await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-keychain']);
+        // return promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-device-info']);
     }
     catch (error) {
         console.error(error);
