@@ -45,7 +45,7 @@ const devDependencies = [
     '@types/redux',
     '@types/shortid',
     '@types/url-parse',
-    'tslint',
+    'eslint',
 ];
 const addJavaCode1 = `import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
