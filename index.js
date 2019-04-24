@@ -160,7 +160,7 @@ const installLibraries = async () => {
         await promiseSpawn('yarn.cmd', ['add', '--dev', ...devDependencies]);
         return promiseSpawn('yarn.cmd', ['react-native', 'link']);
         // await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-cookies']);
-        // await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-keychain']);
+        await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-keychain']);
         // return promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-device-info']);
     }
     catch (error) {
