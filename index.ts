@@ -74,7 +74,6 @@ app-id ... application id. alphabet only. ex. 'decitionformat'`);
     process.exit(1);
 }
 
-const command = argv[2];
 const appId = argv[3];
 const createApp = async () => {
     const path = Path.parse(cwd());
@@ -91,8 +90,22 @@ const createApp = async () => {
     changeAppId();
     // テンプレートの展開
     await extendsTemplate();
-    //
+    // android 初期化
+    await initAndroid();
     console.log('created meimy project.');
+};
+
+const initAndroid = () => {
+    process.chdir('android');
+    let command = 'gradlew';
+    if (process.platform === 'win32') {
+        command += '.bat';
+    }
+    return new Promise((resolve, reject) => {
+        console.log('gradlew clear');
+        const s = spawn(command, ['clean']);
+        spawnLog(s, resolve, reject);
+    });
 };
 
 const createReactNativeProject = () => {
