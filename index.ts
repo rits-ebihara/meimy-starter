@@ -13,10 +13,12 @@ const dependencies = [
     'react-native-device-info',
     'react-native-file-viewer',
     'react-native-fs',
+    'react-native-keychain',
     'react-native-gesture-handler',
     'react-native-loading-spinner-overlay',
+    'react-native-screens',
     'react-navigation-redux-helpers',
-    'react-navigation@3.7',
+    'react-navigation',
     'react-redux',
     'redux-logger',
     'redux',
@@ -35,6 +37,28 @@ const devDependencies = [
     '@types/url-parse',
     'tslint',
 ];
+
+const addJavaCode1 = `import com.facebook.react.ReactActivity;
+import com.facebook.react.ReactActivityDelegate;
+import com.facebook.react.ReactRootView;
+import com.swmansion.gesturehandler.react.RNGestureHandlerEnabledRootView;
+import android.os.Bundle;
+import com.facebook.react.ReactFragmentActivity;`;
+
+const addJavaCode2 = `public class MainActivity extends ReactFragmentActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(null);
+    }
+    @Override
+    protected ReactActivityDelegate createReactActivityDelegate() {
+      return new ReactActivityDelegate(this, getMainComponentName()) {
+        @Override
+        protected ReactRootView createRootView() {
+         return new RNGestureHandlerEnabledRootView(MainActivity.this);
+        }
+      };
+    }`;
 
 // tslint:disable-next-line: max-line-length
 const templateUrl = 'https://www.dropbox.com/s/hxv0pkre1agkx3t/meimy-starter-src.zip?dl=1';
@@ -119,6 +143,20 @@ const changeAppId = () => {
         replacement: 'minSdkVersion = 21',
         silent: false,
     });
+    replace({
+        paths: [Path.join(javaDir, 'MainActivity.java')],
+        recursive: false,
+        regex: 'import com\\.facebook\\.react\\.ReactActivity;',
+        replacement: addJavaCode1,
+        silent: false,
+    });
+    replace({
+        paths: [Path.join(javaDir, 'MainActivity.java')],
+        recursive: false,
+        regex: 'public class MainActivity extends ReactActivity {',
+        replacement: addJavaCode2,
+        silent: false,
+    });
     // Java のパスディレクトリを作成
     console.log(' > change java file in android.');
     const path = idTemplate.replace(/\./g, '/');
@@ -158,10 +196,7 @@ const installLibraries = async () => {
             spawnLog(yarn, resolve, reject);
         });
         await promiseSpawn('yarn.cmd', ['add', '--dev', ...devDependencies]);
-        return promiseSpawn('yarn.cmd', ['react-native', 'link']);
-        // await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-cookies']);
-        await promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-keychain']);
-        // return promiseSpawn('yarn.cmd', ['react-native', 'link', 'react-native-device-info']);
+        await promiseSpawn('yarn.cmd', ['react-native', 'link']);
     } catch (error) {
         console.error(error);
         throw error;
