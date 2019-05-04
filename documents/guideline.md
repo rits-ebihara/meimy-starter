@@ -116,18 +116,3 @@ EIMアプリとしては、一定のセキュリティ要件と開発効率性�
 ### キャッシング
 
 * 一時的な保持には、[react-native-fs](https://github.com/itinance/react-native-fs) の `CacheDirectoryPath`でキャッシュディレクトリを取得し、同ライブラリで読み書きする。
-
-## 開発環境
-
-### 必須
-
-* OS: Windows (10以降)/maxOS (Sierra 以降) で可能。
-  * iOS 用のビルド、デプロイを行うときには、macOS が必要。
-  * インターネットに認証なしでアクセスできる環境。(社内からは、[インターネットダイレクト接続](https://portal.staff.jp.ricoh.com/rfg/it/manual/index.php/DIRECTCONNECTION)を参照のこと)
-* Android Studio, Xcode(macOSのみ)
-
-### 推奨
-* 高性能PC (Core i7(第7世代以上), Memory 16GB以上, SSD)
-  * HDD ではデバッグ等が遅く、開発効率に大きな影響がある。
-* コードエディタ: Visual Studio Code
-* Android, iPhone 実機
