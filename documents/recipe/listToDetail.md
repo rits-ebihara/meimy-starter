@@ -12,21 +12,23 @@
 
 ## 大まかな手順
 
-1. [文書のデータ仕様となる、インターフェースを作成し、 State とする。](#a1)
-2. Reducer を作成し、Store に State を追加する。
-3. 文書を表示する画面(Container Component)を作成する。
-4. ローディング用の画像を表示・非表示するための Action と Reducer の処理を追加する。
-5. 文書を表示する画面のローディングの表示・非表示を修正する。
-6. 文書IDをステートにセットする Action と Reducer の処理を追加する。
-7. Route (画面遷移定義) に 文書を表示する画面を登録する。
-8. データを State にセットするための Action と Reducer の処理を追加する。
-9. データを取得する処理を Action に追加する。
-10. 文書を表示する画面を開いたときに、データのロードを開始する。
-11. 一覧画面の項目でタップしたときに、文書を表示する画面を表示する Dispatch をコールする。
+1. [文書のデータ仕様となる、インターフェースを作成し、 State とする](#a1) 
+2. [Reducer を作成し、Store に State を追加する](#a2)
+3. [文書を表示する画面(Container Component)を作成する](#a3)
+4. [ローディング用の画像を表示・非表示するための Action と Reducer の処理を追加する](#a4)
+5. [文書を表示する画面のローディングの表示・非表示を修正する](#a5)
+6. [文書IDをステートにセットする Action と Reducer の処理を追加する](#a6)
+7. [Route (画面遷移定義) に 文書を表示する画面を登録する](#a7)
+8. [データを State にセットするための Action と Reducer の処理を追加する](#a8)
+9. [データを取得する処理を Action に追加する](#a9)
+10. [文書を表示する画面を開いたときに、データのロードを開始する](#a10)
+11. [一覧画面の項目でタップしたときに、文書を表示する画面を表示する Dispatch をコールする](#a11)
 
 ## 詳細な手順
 
-###  文書のデータ仕様となる、インターフェースを作成し、 State とする。 <a name="a1"></a>
+<a name="a1"></a>
+ 
+###  文書のデータ仕様となる、インターフェースを作成し、 State とする
 
 表示するデータの定義（インターフェース）が必要となります。
 
@@ -100,6 +102,8 @@ interface IDiary {
 
 export default IDiary;
 ```
+
+<a name="a2"></a>
 
 ### Reducer を作成し、Store に State を追加する
 
@@ -180,6 +184,8 @@ const reducer = combineReducers<IState>({
 // 略
 ```
 
+<a name="a3"></a>
+
 ### 文書を表示する画面(Container Component)を作成する
 
 上で作成したインターフェースをプロパティとして文書の内容を表示する画面を作成します。
@@ -237,6 +243,8 @@ const mapStateToProps = (state: IState): IProps<IDiary> => {
 // Store と Component を連結して、Container とする。
 export default connect(mapStateToProps)(Diary);
 ```
+
+<a name="a4"></a>
 
 ### ローディング用の画像を表示・非表示するための Action と Reducer の処理を追加する
 
@@ -309,6 +317,8 @@ arm.addWork<IHideLoadingAction>(HIDE_LOADING, (state, _action) => {
 // 略
 ```
 
+<a name="a5"></a>
+
 ### 文書を表示する画面のローディングの表示・非表示を修正する
 
 画面の方で、この値を見てスピナーの表示・非表示を行います。
@@ -328,6 +338,8 @@ arm.addWork<IHideLoadingAction>(HIDE_LOADING, (state, _action) => {
         );
     }
 ```
+
+<a name="a6"></a>
 
 ### 文書IDをステートにセットする Action と Reducer の処理を追加する
 
@@ -368,6 +380,8 @@ arm.addWork<ISetDocIdAction>(SET_DOC_ID, (state, action) => {
 // 追加 ↑
 // 略
 ```
+
+<a name="a7"></a>
 
 ### Route (画面遷移定義) に 文書を表示する画面を登録する
 
@@ -432,6 +446,8 @@ const rootNav = createSwitchNavigator(rootRouteConfigMap, {
 export default rootNav;
 ```
 
+<a name="a8"></a>
+
 ### データを State にセットするための Action と Reducer の処理を追加する
 
 データを取得する処理の前に、取得できたあとにデータをセットする処理を書きます。
@@ -471,6 +487,8 @@ arm.addWork<ISetDiaryDocDataAction>(SET_DIARY_DOC_DATA, (state, action) => {
 // 追加 ↑
 ```
 
+<a name="a9"></a>
+
 ### データを取得する処理を Action に追加する
 
 EIMのAPIをコールし、データを取得する処理を書きます。
@@ -506,6 +524,8 @@ export const createLoadDiaryDocAction = (docId: string, dispatch: Dispatch, onEr
 };
 ```
 
+<a name="a10"></a>
+
 ### 文書を表示する画面を開いたときに、データのロードを開始する
 
 上で作成した文書を表示する画面を開いたとき(=componentDidMount)に、データのロードを開始する処理を実装します。
@@ -533,6 +553,7 @@ class Diary extends Component<MyProps> {
 }
 ```
 
+<a name="a11"></a>
 
 ### 一覧画面の項目でタップしたときに、文書を表示する画面を表示する Dispatch をコールする
 
