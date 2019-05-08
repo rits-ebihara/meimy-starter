@@ -14,6 +14,12 @@ Meimy-Starter を利用すると、Meimy ライブラリを導入したテンプ
     ```bash
     > yarn global add ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-starter.git
     ```
+    
+    また、この手順では使わないのですが、独自の文書一覧画面や文書詳細画面を作成するときに便利なツールもインストールしておきます。
+
+    ```bash
+    yarn global add ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-utils.git
+    ```
 
 1. 任意のフォルダで、下記コマンドを実行します。アプリ名のフォルダが作成され、その中にプロジェクトファイルが展開されます。
 
