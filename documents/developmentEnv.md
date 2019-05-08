@@ -26,7 +26,7 @@
   yarn global add react-native-cli
   ```
 
-## Gitで SSH の設定
+## Gitで SSH の設定(必須)
 
 Meimyのライブラリは、RITS 共通開発環境のGitリポジトリ (BitBucket) を利用します。
 
@@ -41,12 +41,12 @@ yarn で、そのリポジトリを指定してインストールすることか
 
    *1: 例: C:\Program Files\TortoiseGit\bin\TortoiseGitPlink.exe
 
-2. スタートメニューから PuTTYgen を起動し、秘密鍵、公開鍵を作成します。
+1. スタートメニューから PuTTYgen を起動し、秘密鍵、公開鍵を作成します。
 
     > 参考: https://qiita.com/sugar_15678/items/55cb79d427b9ec21bac2#%E7%A7%98%E5%AF%86%E9%8D%B5%E3%81%A8%E5%85%AC%E9%96%8B%E9%8D%B5%E3%81%AE%E4%BD%9C%E6%88%90
 
-3. PuTTYgen の画面で表示された、"Public key for ..." の値（ランダムな英数の羅列、公開鍵）をコピーします。
-4.  BitBucket にログインし、自分のアカウント管理画面を開きます。  
+1. PuTTYgen の画面で表示された、"Public key for ..." の値（ランダムな英数の羅列、公開鍵）をコピーします。
+1.  BitBucket にログインし、自分のアカウント管理画面を開きます。  
 SSH のメニューを開きます。  
 https://developer.jrits.ricoh.com/bitbucket/plugins/servlet/ssh/account/keys
 
@@ -56,9 +56,9 @@ https://developer.jrits.ricoh.com/bitbucket/plugins/servlet/ssh/account/keys
     > ウィンドウが表示されない場合は、タスクトレイにあります。  
     > タスクトレイのアイコンをダブルクリックすると、ウィンドウが開きます。
 
-2. "AddKey" ボタンを押し、上で作成した 秘密鍵のファイルを開きます。
-3. "Close" ボタンを押して閉じます。タスクトレイで起動し続けます。
-4. 下記コマンドで、クローンが成功すればOKです。(作成されたフォルダは削除してください。)
+1. "AddKey" ボタンを押し、上で作成した 秘密鍵のファイルを開きます。
+1. "Close" ボタンを押して閉じます。タスクトレイで起動し続けます。
+1. 下記コマンドで、クローンが成功すればOKです。(作成されたフォルダは削除してください。)
 
     ```bash
      git clone ssh://git@developer-ssh.jrits.ricoh.com:7999/eimmobile/meimy-utils.git
