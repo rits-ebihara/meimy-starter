@@ -1,7 +1,5 @@
 # スターターを使ったプロジェクトの開始の方法
 
-{toc:printable=true|style=square|maxLevel=2|indent=5px|minLevel=2|class=bigpink|exclude=[1//2]|type=list|outline=true|include=.*}
-
 ## 概要
 
 Meimy-Starter を利用すると、Meimy ライブラリを導入したテンプレートを活用して、素早い開発環境の整備が行なえます。
