@@ -1,6 +1,6 @@
 # スターターを使ったプロジェクトの開始の方法
 
-{toc:printable=true|style=square|maxLevel=2|indent=5px|minLevel=2|class=bigpink|exclude=[1//2]|type=list|outline=true|include=.*}
+[toc]
 
 ## 概要
 
